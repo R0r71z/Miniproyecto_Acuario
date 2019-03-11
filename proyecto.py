@@ -77,36 +77,48 @@ class Tiburon(Pez):
         self.set_tipo("TIBURON")
 
 
+class Tortuga(Pez):
+    def __init__(self, nombre, agua, tamano, temperatura, pais, cantidad):
+        Pez.__init__(self, nombre, agua, tamano, temperatura, pais, cantidad)
+        self.set_tipo("TORTUGA")
+
+
 class Acuario():
     def __init__(self):
         self.__peces = {'DULCE': {'GRANDE': {}, 'PEQUENO': {}, }, 'SALADA': {'GRANDE': {}, 'PEQUENO': {}}}
 
+
+##################################################
+
     def registrar(self, pez):
         retornar = 'Registo Completado'
-        if int(pez.get_tamano() < 20) or int(pez.get_tamano()) > 80:
-            if int(pez.get_tamano()) > 80 and int(pez.get_cantidad()) > 3:
-                modificar = raw_input('La cantidad de peces excede la capacidad del tanque, '
-                                      '\ndesea modificar la cantidad? (SI o NO) ')
-                if modificar.upper() == 'SI':
-                    self.modificar_cantidad(pez)
+        if self.evaluardor_de_informarion(pez) == True:
+            if int(pez.get_tamano() < 20) or int(pez.get_tamano()) > 80:
+                if int(pez.get_tamano()) > 80 and int(pez.get_cantidad()) > 3:
+                    modificar = raw_input('La cantidad de peces excede la capacidad del tanque, '
+                                          '\ndesea modificar la cantidad? (SI o NO) ')
+                    if modificar.upper() == 'SI':
+                        self.modificar_cantidad(pez)
+                        self.__peces[pez.get_agua()]['GRANDE'][pez.get_nombre()] = pez
+                    else:
+                        retornar = 'Registro Cancelado'
+                else:
                     self.__peces[pez.get_agua()]['GRANDE'][pez.get_nombre()] = pez
-                else:
-                    retornar = 'Registro Cancelado'
             else:
-                self.__peces[pez.get_agua()]['GRANDE'][pez.get_nombre()] = pez
-        else:
-            if int(pez.get_cantidad()) > 8:
-                modificar = raw_input('La cantidad de peces excede la capacidad del tanque, '
-                                      '\ndesea modificar la cantidad? (SI o NO) ')
-                if modificar.upper() == 'SI':
-                    self.modificar_cantidad(pez)
+                if int(pez.get_cantidad()) > 8:
+                    modificar = raw_input('La cantidad de peces excede la capacidad del tanque, '
+                                          '\ndesea modificar la cantidad? (SI o NO) ')
+                    if modificar.upper() == 'SI':
+                        self.modificar_cantidad(pez)
+                        self.__peces[pez.get_agua()]['PEQUENO'][pez.get_nombre()] = pez
+                    else:
+                        retornar = 'Registro Cancelado'
+                else:
                     self.__peces[pez.get_agua()]['PEQUENO'][pez.get_nombre()] = pez
-                else:
-                    retornar = 'Registro Cancelado'
-            else:
-                self.__peces[pez.get_agua()]['PEQUENO'][pez.get_nombre()] = pez
+        else:
+            retornar = self.evaluardor_de_informarion(pez)
         return retornar
-
+##############################################
     def modificar_nombre(self, pez):
         nuevo = raw_input('nuevo nombre ')
         if self.evaluador_string(nuevo) != False:
@@ -136,19 +148,45 @@ class Acuario():
                     pez.set_tamano(nuevo)
 
 
+
+
+
+
+
+#################################
     def modificar_pais(self, pez):
         nuevo = raw_input('Nuevo pais ')
-        pez.set_pais(nuevo)
+        if self.evaluador_string(nuevo) != False:
+            pez.set_pais(nuevo)
+            retornar = 'Pais Modificado'
+        else:
+            retornar = 'Nombre contiene caracteres no '
+        return retornar
+
 
     def modificar_cantidad(self, pez):
         print 'NOTA: Recuerde que el limite de animales por especie es: \nAnimales mayor a 20CM = 8 \nAnimales mayor a 80CM = 3'
         print 'Cantidad actual ' + pez.get_cantidad()
+
         nuevo = raw_input('Nueva cantidad ')
         if self.evaluador_integer(nuevo) != False:
-            pez.set_cantidad(nuevo)
-            print 'Cantidad Modificada'
+            if nuevo < pez.get_cantidad():
+                pez.set_cantidad(nuevo)
+                retornar = 'Cantidad Modificada'
+            else:
+                print 'La cantidad de peces todavia excede la '
+        else:
+            print 'Cantidad contiene caracteres '
+            retornar = self.modificar_cantidad(pez)
+        return retornar
 
-    def mostrar(self):
+####################
+
+
+
+
+
+    def mostrar_por_nombre(self):
         nombre = self.buscar_nombre()
         retornar = 'Nombre Incorrecto'
         if nombre != False:
@@ -164,24 +202,29 @@ class Acuario():
             print 'a)Nombre\nb)Agua\nc)Tamano\nd)Temperatura\ne)Pais\nf)Tipo\ng)Cantidad\nh)TODO'
             ver = raw_input('que desea ver? (a,b,c,d,e,f,g,h) ')
             retornar = lista[ver.upper()]
-
-
         return retornar
 
     def mostrar_por_pais(self):
         pais = raw_input('Nombre del pais ')
         animales = []
-        for agua in self.get_peces():
-            for tanque in self.get_peces()[agua]:
-                for animal in self.get_peces()[agua][tanque]:
-                    if pais.upper() == self.get_peces()[agua][tanque][animal].get_pais():
-                        animales.append(self.get_peces()[agua][tanque][animal])
-
-        for nombre in animales:
-            print ['Nombre: ' + nombre.get_nombre(),'Tipo de animal: ' + nombre.get_tipo(),
-             'De agua: ' + nombre.get_agua(),'Tamano aproximado de: ' + nombre.get_tamano(),
-              'Temperatura recomendable: ' + nombre.get_temperatura(), 'Pais nativo: ' + nombre.get_pais(),
-              'Cantidad en tanque: ' + nombre.get_cantidad()]
+        lista = []
+        if self.evaluador_string(pais) != False:
+            for agua in self.get_peces():
+                for tanque in self.get_peces()[agua]:
+                    for animal in self.get_peces()[agua][tanque]:
+                        if pais.upper() == self.get_peces()[agua][tanque][animal].get_pais():
+                            lista.append(self.get_peces()[agua][tanque][animal])
+            if len(lista) > 0:
+                for nombre in lista:
+                    animales.append(['Nombre: ' + nombre.get_nombre(),'Tipo de animal: ' + nombre.get_tipo(),
+                     'De agua: ' + nombre.get_agua(),'Tamano aproximado de: ' + nombre.get_tamano(),
+                      'Temperatura recomendable: ' + nombre.get_temperatura(), 'Pais nativo: ' + nombre.get_pais(),
+                      'Cantidad en tanque: ' + nombre.get_cantidad()])
+            else:
+                animales = 'Pais no encontrado'
+        else:
+            animales = 'Pais no encontrado'
+        return animales
 
 
 
@@ -210,21 +253,33 @@ class Acuario():
         numeros = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
         for element in integer:
             if element not in numeros:
-                return false
+                return False
 
 
     def evaluador_string(self, string):
-        letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-
+        letras = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z', ' ']
         for element in string.upper():
             if element not in letras:
                 return False
+
+    ###################################
+
+    def evaluardor_de_informarion(self, pez):
+        retornar = True
+        evaluar = [pez.get_nombre(), pez.get_agua(), pez.get_tamano(),
+                   pez.get_temperatura(), pez.get_pais(),pez.get_cantidad()]
+        for elemento in evaluar:
+            if self.evaluador_string(elemento) == False and self.evaluador_integer(elemento) == False:
+                retornar = 'La infomarcion es incorrecta, por favor verificar ' + elemento
+        return retornar
+
+    ####################
 
     def get_peces(self):
         return self.__peces
 
 
-peje1 = Pez('mario', 'dulce', '40', '35', 'Rep. Dom.', '7')
+peje1 = Pez('mario', 'dulce', '40', '35', 'Rep Dom', '9')
 peje2 = Pez('raul', 'dulce', '40', '35', 'Rep. Dom.', '1')
 tiburon = Tiburon('alma', 'salada', '85', '30', 'Rep. Dom.', '1')
 

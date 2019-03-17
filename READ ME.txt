@@ -1,0 +1,6 @@
+Miniproyecto Acuario
+
+Consiste en una clase Aquarium la cual utiliza una tabla Hash y diferentes metodos 
+para almacenar los objetos de las clases Fish, Shark y Turtle.
+
+

@@ -1,4 +1,3 @@
-
 #Nombre: Fish(Tipo:Class)
 #Objetivo: crea objetos tipo Fish con sus propios parametros como lo son Name, Water,
 #Size, Temperature, Country y Amount. Sirbe de guia para otras clases
@@ -71,6 +70,38 @@ class Aquarium():
     def __init__(self):
         self.__list = [[],[],[],[],[],[],[],[],[],[]]
 
+
+    def start(self):
+        print 'OPCIONES: \na)Crear\nb)Buscar\nc)Modificar\nd)Eliminar'
+        opciones = raw_input('Que desea hacer? (a,b,c,d) ').upper()
+        if opciones == 'A':
+            return self.create()
+        if opciones == 'B':
+            return self.show()
+        if opciones == 'C':
+            return False
+        if opciones == 'D':
+            return self.delete()
+
+
+    def create(self):
+        print 'OPCIONES: \na)Pez\n)bTiburon\nc)Tortuga'
+        opciones = raw_input('Que desea hacer? (a,b,c) ').upper()
+        name = raw_input('nombre ').upper()
+        water = raw_input('agua ').upper()
+        size = raw_input('Tamano ').upper()
+        temperature = raw_input('temperatura ').upper()
+        country = raw_input('pais ').upper()
+        amount = raw_input('cantidad ').upper()
+        if opciones == 'A':
+            animal = Fish(name, water, size, temperature, country, amount)
+        if opciones == 'B':
+            animal = Shark(name, water, size, temperature, country, amount)
+        if opciones == 'C':
+            animal = Turtle(name, water, size, temperature, country, amount)
+
+        return self.register(animal), self.start()
+
 # Nombre: hashCode
 # Parametros: animal(Tipo: Fish, Shark, Turtle)
 # Objetivo: utiliza el metodo get_name propio del objeto para utilizar el nombre del animal y asignarle una posicion en la tabla Hash .
@@ -96,13 +127,15 @@ class Aquarium():
 # Parametros: animal(Tipo: Fish, Shark, Turtle)
 # Objetivo: Elimina el objeto Animal en el la tabla Hash __list.
 # Retorno: None
-    def delete(self, animal):
+    def delete(self):
+        name = raw_input('Nombre ').upper()
         counter = 0
-        bucket = self.hashCode(animal.get_name())
+        bucket = self.hashCode(name)
         for element in self.get_list()[bucket]:
-            if animal.get_name() in element:
-                self.get_list()[self.hashCode(animal.get_name())].pop(counter)
+            if name in element:
+                self.get_list()[bucket].pop(counter)
             counter +=1
+        return self.start()
 
 # Nombre: modifyName
 # Parametros: Animal(Tipo: Fish, Shark, Turtle)
@@ -181,11 +214,15 @@ class Aquarium():
         if how == 'B':
             animal = self.findWType()
 
-        for element in animal:
-            print ['Nombre: ' + element.get_name(),'Tipo de animal: ' + element.get_type(),
+        if len(animal) > 0:
+            for element in animal:
+                print ['Nombre: ' + element.get_name(),'Tipo de animal: ' + element.get_type(),
                      'De agua: ' + element.get_water(),'Tamano aproximado de: ' + element.get_size(),
                       'Temperatura recomendable: ' + element.get_temperature(), 'Pais nativo: ' + element.get_country(),
                       'Cantidad en tanque: ' + element.get_amount()]
+        else:
+            print 'no se encontro'
+        return self.start()
 
 # Nombre: intergerTest
 # Parametros: interger(Tipo: Str)
@@ -238,16 +275,20 @@ class Aquarium():
 
 
 
-peje1 = Fish('mario', 'dulce', '40', '31', 'Rep Dom', '12')
-peje2 = Fish('raul', 'dulce', '4g0', '22', 'Rep Dom', '1')
-tiburon1 = Shark('alma', 'salada', '85', '30', 'australia', '1')
-tortuga1 = Turtle('juan', 'salada', '40', '25', 'costarica', '12')
-
 acu = Aquarium()
-acu.register(peje1)
-acu.register(peje2)
-acu.register(tiburon1)
-acu.register(tortuga1)
-print acu.get_list()
-print acu.show()
-#print acu.get_list()
+print acu.start()
+
+
+# peje1 = Fish('mario', 'dulce', '40', '31', 'Rep Dom', '12')
+# # peje2 = Fish('raul', 'dulce', '4g0', '22', 'Rep Dom', '1')
+# # tiburon1 = Shark('alma', 'salada', '85', '30', 'australia', '1')
+# # tortuga1 = Turtle('juan', 'salada', '40', '25', 'costarica', '12')
+# #
+# # acu = Aquarium()
+# # acu.register(peje1)
+# # acu.register(peje2)
+# # acu.register(tiburon1)
+# # acu.register(tortuga1)
+# # print acu.get_list()
+# # print acu.show()
+# # #print acu.get_list()

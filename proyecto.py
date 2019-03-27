@@ -74,25 +74,34 @@ class Aquarium():
     def start(self):
         print 'OPCIONES: \na)Crear\nb)Buscar\nc)Modificar\nd)Eliminar'
         opciones = raw_input('Que desea hacer? (a,b,c,d) ').upper()
+        result = None
         if opciones == 'A':
-            return self.create()
+            result = self.create()
         if opciones == 'B':
-            return self.show()
+            result =  self.show()
         if opciones == 'C':
-            return False
+            result = self.modifyName()
         if opciones == 'D':
-            return self.delete()
+            result = self.delete()
+        else:
+            result = self.start()
+        return result
 
 
     def create(self):
         print 'OPCIONES: \na)Pez\n)bTiburon\nc)Tortuga'
         opciones = raw_input('Que desea hacer? (a,b,c) ').upper()
-        name = raw_input('nombre ').upper()
-        water = raw_input('agua ').upper()
-        size = raw_input('Tamano ').upper()
-        temperature = raw_input('temperatura ').upper()
-        country = raw_input('pais ').upper()
-        amount = raw_input('cantidad ').upper()
+        name = raw_input('Nombre del animal: ').upper()
+        water = raw_input('Tipo de Agua: ').upper()
+        size = raw_input('Tamano en CM (solo numeros): ')
+        temperature = raw_input('Temperatura ideal del ambiente(solo numeros y grados centigrados): ')
+        country = raw_input('Pais de procedencia: ').upper()
+        amount = raw_input('Cantidad a registrar: ').upper()
+        if self.stringTest(name) == False or self.stringTest(water) == False or self.stringTest(country) == False \
+                or self.integerTest(size) == False or self.integerTest(temperature) == False or self.integerTest(
+            amount) == False:
+            print 'Formato de Informacion Incorrecto, intente nuevamente'
+            return self.create()
         if opciones == 'A':
             animal = Fish(name, water, size, temperature, country, amount)
         if opciones == 'B':
@@ -134,23 +143,43 @@ class Aquarium():
         for element in self.get_list()[bucket]:
             if name in element:
                 self.get_list()[bucket].pop(counter)
-            counter +=1
+                print '.......................\nNombre Eliminado\n.......................'
+
+            else:
+                counter +=1
         return self.start()
+
+
+
+    # def modify(self):
+
+    #     animal = self.findWName()
+    #     self.modifyName(animal)
 
 # Nombre: modifyName
 # Parametros: Animal(Tipo: Fish, Shark, Turtle)
 # Objetivo: Modificar el nombre del Objeto (Fish, Shark, Turtle) y modificar su registro en la tabla hash.
 # Retorno: dependiendo de la evaluacion, el metodo retorna donde hay un error o si el registro fue exitoso o cancelado.
-    def modifyName(self,animal):
-        newName = raw_input('Digite el nuevo nombre ')
-        if self.stringTest(newName) == True:
-            self.delete(animal)
-            animal.set_name(newName.upper())
+    def modifyName(self):
+        name = raw_input('Digite el Nombre del animal que desea buscar: ').upper()
+        newName = raw_input('Digite el nuevo nombre ').upper()
+        bucket = self.hashCode(name)
+        counter = 0
+        if self.stringTest(name) == True and self.stringTest(newName) == True:
+            for element in self.get_list()[bucket]:
+                if name in element:
+                    animal = self.__list[bucket][counter].pop()
+                counter +=1
+            animal.set_name(newName)
             self.register(animal)
-            print '.......................\nRegistro Completo\n.......................'
+            print '.......................\nModificacion Completa\n.......................'
+            self.start()
         else:
-            print 'El nombre solo puede recibir letras como informacion, por favor intente nueva mente'
-            self.modifyName(animal)
+            print 'El nuevo nombre tiene caracteres inadecuados'
+            self.modifyName()
+
+
+
 
 # Nombre: modifySize
 # Parametros: Animal(Tipo: Fish, Shark, Turtle).
@@ -214,15 +243,11 @@ class Aquarium():
         if how == 'B':
             animal = self.findWType()
 
-        if len(animal) > 0:
-            for element in animal:
-                print ['Nombre: ' + element.get_name(),'Tipo de animal: ' + element.get_type(),
+        for element in animal:
+            print ['Nombre: ' + element.get_name(),'Tipo de animal: ' + element.get_type(),
                      'De agua: ' + element.get_water(),'Tamano aproximado de: ' + element.get_size(),
                       'Temperatura recomendable: ' + element.get_temperature(), 'Pais nativo: ' + element.get_country(),
                       'Cantidad en tanque: ' + element.get_amount()]
-        else:
-            print 'no se encontro'
-        return self.start()
 
 # Nombre: intergerTest
 # Parametros: interger(Tipo: Str)
@@ -280,15 +305,17 @@ print acu.start()
 
 
 # peje1 = Fish('mario', 'dulce', '40', '31', 'Rep Dom', '12')
-# # peje2 = Fish('raul', 'dulce', '4g0', '22', 'Rep Dom', '1')
+# peje2 = Fish('raul', 'dulce', '40', '22', 'Rep Dom', '1')
 # # tiburon1 = Shark('alma', 'salada', '85', '30', 'australia', '1')
 # # tortuga1 = Turtle('juan', 'salada', '40', '25', 'costarica', '12')
 # #
 # # acu = Aquarium()
-# # acu.register(peje1)
-# # acu.register(peje2)
-# # acu.register(tiburon1)
+# print acu.register(peje1)
+# print acu.register(peje2)
+# print acu.findWName()
 # # acu.register(tortuga1)
 # # print acu.get_list()
 # # print acu.show()
 # # #print acu.get_list()
+
+

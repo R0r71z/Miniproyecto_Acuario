@@ -151,29 +151,31 @@ class Aquarium():
 
 
 
-    # def modify(self):
-
-    #     animal = self.findWName()
-    #     self.modifyName(animal)
-
 # Nombre: modifyName
 # Parametros: Animal(Tipo: Fish, Shark, Turtle)
 # Objetivo: Modificar el nombre del Objeto (Fish, Shark, Turtle) y modificar su registro en la tabla hash.
 # Retorno: dependiendo de la evaluacion, el metodo retorna donde hay un error o si el registro fue exitoso o cancelado.
     def modifyName(self):
-        name = raw_input('Digite el Nombre del animal que desea buscar: ').upper()
-        newName = raw_input('Digite el nuevo nombre ').upper()
+        name = raw_input('Digite el Nombre del animal que desea Modificar: ').upper()
         bucket = self.hashCode(name)
         counter = 0
-        if self.stringTest(name) == True and self.stringTest(newName) == True:
+        animal =[]
+        if self.stringTest(name) == True:
             for element in self.get_list()[bucket]:
                 if name in element:
-                    animal = self.__list[bucket][counter].pop()
+                    animal.append(self.__list[bucket][counter].pop())
                 counter +=1
-            animal.set_name(newName)
-            self.register(animal)
-            print '.......................\nModificacion Completa\n.......................'
-            self.start()
+
+            if len(animal)> 0:
+                newName = raw_input('Digite el nuevo nombre ').upper()
+                animal[0].set_name(newName)
+                self.register(animal[0])
+
+                print '.......................\nModificacion Completa\n.......................'
+                self.start()
+            else:
+                print 'Animal no encontrado, intente nuevamente'
+                self.modifyName()
         else:
             print 'El nuevo nombre tiene caracteres inadecuados'
             self.modifyName()
